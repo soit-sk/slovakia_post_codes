@@ -1,23 +1,27 @@
-# This is a template for a Python scraper on Morph (https://morph.io)
-# including some code snippets below that you should find helpful
+#!/usr/bin/python2.7
 
-# import scraperwiki
-# import lxml.html
-#
-# # Read in a page
-# html = scraperwiki.scrape("http://foo.com")
-#
-# # Find something on the page using css selectors
-# root = lxml.html.fromstring(html)
-# root.cssselect("div[align='left']")
-#
-# # Write out to the sqlite database using scraperwiki library
-# scraperwiki.sqlite.save(unique_keys=['name'], data={"name": "susan", "occupation": "software developer"})
-#
-# # An arbitrary query against the database
-# scraperwiki.sql.select("* from data where 'name'='peter'")
+import scraperwiki
+#import csv
+import urllib2
+import xlrd
+import zipfile
+from cStringIO import StringIO
 
-# You don't have to do things with the ScraperWiki and lxml libraries. You can use whatever libraries are installed
-# on Morph for Python (https://github.com/openaustralia/morph-docker-python/blob/master/pip_requirements.txt) and all that matters
-# is that your final data is written to an Sqlite database called data.sqlite in the current working directory which
-# has at least a table called data.
+url = "http://www.posta.sk/subory/322/psc-obci-a-ulic.zip"
+
+archive_file = StringIO(urllib2.urlopen(url).read())
+archive = zipfile.ZipFile(archive_file)
+
+wb = xlrd.open_workbook(file_contents=archive.read('OBCE.XLS'))
+sheet = wb.sheets()[0]
+with open('psc.csv', 'wb') as f:
+    #writer = csv.writer(f)
+    for row in range(1, sheet.nrows):
+        #writer.writerow([sheet.cell(row, i).value.encode('utf8') for i in cell_idxs])
+        data = {
+            'obec': sheet.cell(row, 1),
+            'okres': sheet.cell(row, 2),
+            'psc': sheet.cell(row, 3),
+            'kraj': sheet.cell(row, 7),
+        }
+        scraperwiki.sqlite.save(unique_keys=['obec'], data=data)
