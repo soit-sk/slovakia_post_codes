@@ -33,6 +33,3 @@ for row in range(1, sheet.nrows):
         'obec': sheet.cell(row, 6).value,
     }
     scraperwiki.sqlite.save(unique_keys=['ulica'], data=data, table_name="streets")
-
-# Take up additional 4KB so we get to a total of 666KB
-open('satan.dat', 'wb').write('6' * 4 * 1024)
