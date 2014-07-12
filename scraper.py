@@ -19,9 +19,9 @@ with open('psc.csv', 'wb') as f:
     for row in range(1, sheet.nrows):
         #writer.writerow([sheet.cell(row, i).value.encode('utf8') for i in cell_idxs])
         data = {
-            'obec': sheet.cell(row, 1).value.encode('utf8'),
-            'okres': sheet.cell(row, 2).value.encode('utf8'),
-            'psc': sheet.cell(row, 3).value.encode('utf8'),
-            'kraj': sheet.cell(row, 7).value.encode('utf8'),
+            'obec': sheet.cell(row, 1).value,
+            'okres': sheet.cell(row, 2).value,
+            'psc': sheet.cell(row, 3).value,
+            'kraj': sheet.cell(row, 7).value,
         }
         scraperwiki.sqlite.save(unique_keys=['obec'], data=data)
